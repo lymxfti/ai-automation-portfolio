@@ -43,4 +43,4 @@ I’ve worked with 50+ enterprises accross 100+ systems in compliance, IT risk, 
 
 ## 📝 License
 
-MIT License. For learning, evaluation, and inspiration.
+MIT License
