@@ -30,7 +30,8 @@ This repo contains a selection of sanitized workflow demos and projects I’ve b
 ## 📂 Project List
 
 - `whatsapp-lead-automation`  
-- `linkedin-rss-content-generator`  
+- `linkedin-rss-content-generator`
+- `ai-proposal-generator`
 - *(More coming soon as I upload)*
 
 ---
