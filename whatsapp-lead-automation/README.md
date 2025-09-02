@@ -15,14 +15,14 @@ This project is an end-to-end WhatsApp automation system built for a real estate
 - **Human-in-the-loop approvals** (agent can review and approve message drafts before sending)
 - **Automated follow-up logic** (context aware reminders at 24h/72h/7d intervals if no reply)
 - **Reply detection and push notification** (see below for details)
-- **Scheduled data cleanup** (Supabase runs a scheduled job every 30 minutes to clear out messages not from leads)
 - **Full auditability and data tracking** (all inbound and outbound WhatsApp messages stored in Supabase/Postgres backend)
+- **Scheduled data cleanup** (Supabase runs a scheduled job every 30 minutes to clear out messages not from leads)
 
 ## Stack & Tools
 
 - n8n (workflow orchestration)
 - Airtable (lead database)
-- WhatsApp API (messaging)
+- WhatsApp headless browser API (messaging)
 - LLMs for message drafting (e.g., OpenAI, custom prompt logic—redacted)
 - **Supabase/Postgres** (back end for storing all message logs and state)
 - Push notification service (e.g., Pushover)
@@ -32,7 +32,7 @@ This project is an end-to-end WhatsApp automation system built for a real estate
 1. **Lead intake:** New leads are added to Airtable, triggering the workflow
 2. **Message draft:** The system generates a personalized WhatsApp message draft for the agent
 3. **Agent approval:** The agent reviews/edits the draft (human-in-the-loop)
-4. **Message send:** Once approved, the message is sent via WhatsApp API
+4. **Message send:** Once approved, the message is sent via WhatsApp headless browser API
 5. **Follow-up logic:** If no reply, follow-ups are automatically drafted and scheduled at set intervals
 6. **Reply detection:**  
    - All inbound and outbound WhatsApp messages are stored in Supabase  
