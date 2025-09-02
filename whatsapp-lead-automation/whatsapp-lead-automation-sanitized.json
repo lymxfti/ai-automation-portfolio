@@ -1,0 +1,5323 @@
+{
+  "name": "Whatsapp Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        752,
+        -160
+      ],
+      "id": "88a9c4ee-3abe-4bc8-8797-9a3ec46fc518",
+      "name": "30",
+      "webhookId": "e58802fb-21f3-45d8-9f1d-f5c34cbdfeda"
+    },
+    {
+      "parameters": {
+        "path": "create-draft",
+        "options": {
+          "responseData": "=<html>\n  <body style=\"background-color:#000000; color:#ffffff; font-family:sans-serif; font-size:20px;\">\n    <p>\n      Your message draft is being created.<br><br>\n      You may now close this tab.\n    </p>\n  </body>\n</html>\n",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        48,
+        656
+      ],
+      "id": "fb5219f2-af06-4503-be3c-1464a714a350",
+      "name": "createDraft",
+      "webhookId": "b0f2dc0a-e2ab-4f67-a65e-56c95595a7ee"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Frameworks",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "filterByFormula": "={frameworkName} = \"{{ $json.query.framework }}\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        576
+      ],
+      "id": "8cd2760b-6196-40a2-a87b-5ad3ae81f838",
+      "name": "getFramework",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "id": "={{ $json.query.recordId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        720
+      ],
+      "id": "2114b2ac-45ad-4fc9-b550-8371e069028a",
+      "name": "getLeadInfo",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Brand Guidelines",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "filterByFormula": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        576,
+        496
+      ],
+      "id": "1acb78cb-2882-4f13-b94f-294f7606ce3f",
+      "name": "getBrandGuidelines",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Agent Information",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "filterByFormula": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        576,
+        784
+      ],
+      "id": "3e411b04-e287-4147-a759-7b18e2cf409e",
+      "name": "getAgentInformation",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo-16k",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo-16k"
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1296,
+        736
+      ],
+      "id": "c43f8bf4-0936-4329-9a93-d39a4e0215e8",
+      "name": "gpt-4o",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please craft a WhatsApp outreach message based on the following information:\n\nAgent Name: {{ $json.data[3].agentName }}\nAgent Last Name: {{ $json.data[3].agentLastName }}\nAgent Title: {{ $json.data[3].agentRole }}\nAgency Name: {{ $json.data[3].agencyName }}\n\n---\n\nLead First Name: {{ $json.data[2].firstName }}\nLead Last Name: {{ $json.data[2].lastName }}\nCampaign Name: {{ $json.data[2].campaignName }}\nCall answered?: {{ $json.data[2].callAnswered }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a professional copywriter assisting a Senior Portfolio Manager at a luxury real estate agency.\n\nYour task is to write personalized WhatsApp outreach messages to warm leads who have expressed interest in a specific real estate project.\n\nYou will receive:\n- Agent details (first name, last name, title, agency name)\n- Lead details (first name, project/campaign name, whether the call was answered)\n- A predefined outreach framework that determines structure and tone\n- Brand guidelines that define the agent’s communication style\n\nFollow these strict rules when generating the message:\n\n## GENERAL RULES —\n- Keep the tone professional, confident, and service-oriented\n- Do not include emojis, slang, or casual expressions\n- Do not use marketing words like “exclusive”, “luxury”, “amazing”, etc.\n- Do not make assumptions about the lead’s preferences or budget\n- Keep the message short (max 4 sentences, 400 characters)\n- Do not use a sign-off or include agent/agency name at the end\n\n## CALL STATUS RULES —\n- If `answeredCall` is \"Yes\":\n    - Mention that the agent spoke with the lead earlier\n    - Do NOT reference the agent’s title anywhere in the message\n- If `answeredCall` is \"No\":\n    - Mention that the agent attempted to reach the lead by phone\n    - Introduce the agent in the first sentence using this exact structure:\n      \"[Greeting], this is [Agent First Name] [Agent Last Name] — [Title] at [Agency Name].\"\n    - Do not refer to the title again after the first sentence\n\n## TITLE USAGE —\n- Never use the phrase “As a [title]...”  \n- Never refer to the agent’s title in the middle or end of the message  \n- Only use the title if the lead did not answer the call, and only in the **first sentence**\n\nYour message must sound like it was written by a professional real estate advisor.\n\nOnly return the final message text — do not include formatting, notes, or explanations.\n"
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=Please use the following framework and brand guidelines:\n{{ $json.data[1].frameworkDescription }}\n---\n{{ $json.data[0].guidelineDescription }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1296,
+        640
+      ],
+      "id": "54e11211-302b-4834-b830-1049a89d3013",
+      "name": "messageDrafter LLM"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d338a573-afa6-42e0-8ab3-db45ce471ce2",
+              "name": "guidelineDescription",
+              "value": "={{ $json.guidelineDescription }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        512
+      ],
+      "id": "62faa45e-655a-4b10-8bd4-92fdfd86cee6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "011bc884-f24c-4fe1-8327-43b9f6326780",
+              "name": "frameworkDescription",
+              "value": "={{ $json.frameworkDescription }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        576
+      ],
+      "id": "c1ef986b-e775-4572-8c45-811f5eb6c349",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b9b08719-21a5-4f2b-98a1-8412d8141c7a",
+              "name": "firstName",
+              "value": "={{ $json.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "47c80141-11d6-42f8-b2d8-fa891d5cd254",
+              "name": "lastName",
+              "value": "={{ $json.lastName }}",
+              "type": "string"
+            },
+            {
+              "id": "59901123-7174-47be-a825-9f1eb4e71a71",
+              "name": "campaignName",
+              "value": "={{ $json.campaignName }}",
+              "type": "string"
+            },
+            {
+              "id": "3112a6ab-e744-4de3-a9f9-805b877e8c84",
+              "name": "callAnswered",
+              "value": "={{ $json.callAnswered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        720
+      ],
+      "id": "6c350a3d-7bcc-464d-a716-1b166d859f8b",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6ebe26a5-1f04-412e-8533-d4ef802ee968",
+              "name": "agentName",
+              "value": "={{ $json.agentName }}",
+              "type": "string"
+            },
+            {
+              "id": "f16eb488-ea61-4ca6-90ae-8e0550ebfcee",
+              "name": "agentLastName",
+              "value": "={{ $json.agentLastName }}",
+              "type": "string"
+            },
+            {
+              "id": "e23562fe-6779-4bce-bcf6-00bb34fd885e",
+              "name": "agentRole",
+              "value": "={{ $json.agentRole }}",
+              "type": "string"
+            },
+            {
+              "id": "15b95a5c-5f81-416d-8e34-e5e8f82808c3",
+              "name": "agencyName",
+              "value": "={{ $json.agencyName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        768
+      ],
+      "id": "9b5f236b-a0a2-4ef5-9b38-8b970c573ae5",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        944,
+        608
+      ],
+      "id": "e9becf27-31cf-401f-a9b8-e213eb881236",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        640
+      ],
+      "id": "1663e917-b33b-4707-a5ef-e33d28f66615",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('createDraft').item.json.query.recordId }}",
+            "status": "Awaiting Approval",
+            "messageDraft": "={{ $json.text }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "phoneNumber",
+              "displayName": "phoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "campaignName",
+              "displayName": "campaignName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "callAnswered",
+              "displayName": "callAnswered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Concierge Assist",
+                  "value": "Concierge Assist"
+                },
+                {
+                  "name": "Curated Match",
+                  "value": "Curated Match"
+                },
+                {
+                  "name": "Position & Offer",
+                  "value": "Position & Offer"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "createDraft",
+              "displayName": "createDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "messageDraft",
+              "displayName": "messageDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "approveDraft",
+              "displayName": "approveDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateSent",
+              "displayName": "dateSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "dateAdded",
+              "displayName": "dateAdded",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1600,
+        640
+      ],
+      "id": "a9ef76b2-5d5a-4a38-833a-2c84f5da6ee7",
+      "name": "messageDraft",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "approve-draft",
+        "options": {
+          "responseData": "=<html>\n  <body style=\"background-color:#000000; color:#ffffff; font-family:sans-serif; font-size:20px;\">\n    <p>\n      Draft approved!<br><br>\n      You may now close this tab.\n    </p>\n  </body>\n</html>\n",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        48,
+        1008
+      ],
+      "id": "c7572f9a-2c5f-4a25-8eec-0acff5d70273",
+      "name": "approveDraft1",
+      "webhookId": "b0f2dc0a-e2ab-4f67-a65e-56c95595a7ee"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.query.recordId }}",
+            "status": "Approved"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "phoneNumber",
+              "displayName": "phoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "campaignName",
+              "displayName": "campaignName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "callAnswered",
+              "displayName": "callAnswered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Concierge Assist",
+                  "value": "Concierge Assist"
+                },
+                {
+                  "name": "Curated Match",
+                  "value": "Curated Match"
+                },
+                {
+                  "name": "Position & Offer",
+                  "value": "Position & Offer"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "createDraft",
+              "displayName": "createDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "messageDraft",
+              "displayName": "messageDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "approveDraft",
+              "displayName": "approveDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateSent",
+              "displayName": "dateSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "dateAdded",
+              "displayName": "dateAdded",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        1008
+      ],
+      "id": "d32e6051-05c3-4b3a-b42c-3a649b2c6bd5",
+      "name": "updateStatus",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "send-message",
+        "options": {
+          "responseData": "=<html>\n  <body style=\"background-color:#000000; color:#ffffff; font-family:sans-serif; font-size:20px;\">\n    <p>\n      Message Sent!<br><br>\n      You may now close this tab.\n    </p>\n  </body>\n</html>\n",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        48,
+        256
+      ],
+      "id": "f732dbf3-77c6-4935-95c1-26f0ed946e82",
+      "name": "sendMessage",
+      "webhookId": "b0f2dc0a-e2ab-4f67-a65e-56c95595a7ee"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "id": "={{ $json.query.recordId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        256
+      ],
+      "id": "6ee54c40-fca2-4706-aefc-699fefea6b67",
+      "name": "getLead",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=YOUR_URL $json.phoneNumber }}&apikey=x6LoHwj2sAhd&text={{ $json.messageDraft }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        256
+      ],
+      "id": "086379cf-b6b5-44d5-a0dd-c9687077e1f6",
+      "name": "sendMessageWA",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "E-Card",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        928,
+        256
+      ],
+      "id": "99764fff-3f17-4a24-93d4-0c5bbab03d3f",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const min = 6;\nconst max = 10;\n\n// Generate a float between 6 and 10, rounded to 2 decimals\nconst randomDelay = parseFloat((Math.random() * (max - min) + min).toFixed(2));\n\nreturn [\n  {\n    json: {\n      waitInSeconds: randomDelay\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        256
+      ],
+      "id": "1ac6a2e7-14db-4db4-a638-d0cb380d6c83",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "tableId": "lead_numbers",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $('getLead').item.json.phoneNumber.replace(/\\D/g, '') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        752,
+        256
+      ],
+      "id": "244c7e48-b12b-4ac5-a4b3-c436d0b70fe3",
+      "name": "addLeadToDB",
+      "credentials": {
+        "supabaseApi": {
+          "id": "kVAqtA5p3YJy9nN4",
+          "name": "DemoTest"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "Sent",
+            "id": "={{ $('sendMessage').item.json.query.recordId }}",
+            "dateSent": "={{ $now.toISO() }}",
+            "timeSent": "={{ $now.toFormat('HH:mm') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "phoneNumber",
+              "displayName": "phoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "campaignName",
+              "displayName": "campaignName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "callAnswered",
+              "displayName": "callAnswered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Concierge Assist",
+                  "value": "Concierge Assist"
+                },
+                {
+                  "name": "Curated Match",
+                  "value": "Curated Match"
+                },
+                {
+                  "name": "Position & Offer",
+                  "value": "Position & Offer"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "createDraft",
+              "displayName": "createDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "messageDraft",
+              "displayName": "messageDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "approveDraft",
+              "displayName": "approveDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateAdded",
+              "displayName": "dateAdded",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateSent",
+              "displayName": "dateSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timeSent",
+              "displayName": "timeSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1488,
+        256
+      ],
+      "id": "e47bac6f-5d29-4479-ad2f-f21d5afc4735",
+      "name": "updateAirtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=YOUR_URL $('getLead').item.json.phoneNumber }}&apikey=x6LoHwj2sAhd&file={{ $json.imageUrl[0].url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1296,
+        256
+      ],
+      "id": "0b1e4878-9710-4e59-81db-836d4ba533aa",
+      "name": "sendImage"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        864,
+        1008
+      ],
+      "id": "36537f1c-8405-42fc-9421-95f47daf6226",
+      "name": "dbCleanUp"
+    },
+    {
+      "parameters": {
+        "content": "# DB Clean Up",
+        "height": 80,
+        "width": 896,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        816,
+        944
+      ],
+      "typeVersion": 1,
+      "id": "0707593e-3907-40ca-9be1-51acf6dc1d5d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Approve Draft",
+        "height": 80,
+        "width": 368,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        944
+      ],
+      "typeVersion": 1,
+      "id": "723b29dc-5acb-4de3-96cd-915e32d95742",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "lead_numbers",
+        "returnAll": true,
+        "filterType": "none"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        1008
+      ],
+      "id": "cc67d811-6e2b-46e4-b512-ba5d107672a9",
+      "name": "getContactedLeads",
+      "credentials": {
+        "supabaseApi": {
+          "id": "kVAqtA5p3YJy9nN4",
+          "name": "DemoTest"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "whatsapp_messages",
+        "filterType": "string",
+        "filterString": "={{'from=not.in.(' + $json.phone.join(',') + ')'}}"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        1008
+      ],
+      "id": "9630a045-a85a-4f2b-bd17-881b66adbb09",
+      "name": "deleteOtherMessages",
+      "credentials": {
+        "supabaseApi": {
+          "id": "kVAqtA5p3YJy9nN4",
+          "name": "DemoTest"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "phone"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        1008
+      ],
+      "id": "c1468671-e756-4de1-949d-513a712dc418",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-reply-alert",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        -32
+      ],
+      "id": "dd248b1e-66a6-4e79-ad4d-d772b788b31d",
+      "name": "leadReply",
+      "webhookId": "2ef157cc-4afe-4514-925d-4eec526bf110"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -160
+      ],
+      "id": "0763886e-50cc-47ee-90d0-88a4aefae077",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "whatsapp_messages",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "from",
+              "condition": "eq",
+              "keyValue": "={{ $('leadReply').item.json.body.from_phone }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -160
+      ],
+      "id": "4a62f3a7-2e92-49f8-8ef3-6be7046a4fd3",
+      "name": "getLeadMessages",
+      "credentials": {
+        "supabaseApi": {
+          "id": "kVAqtA5p3YJy9nN4",
+          "name": "DemoTest"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": "={{ $('Code').item.json.waitInSeconds }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        256
+      ],
+      "id": "ae6129e3-c496-42ce-8c81-921200b011b9",
+      "name": "6<X<10",
+      "webhookId": "094fe16e-7470-4b05-99b8-fab82756cd18"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b65b4957-a669-4c83-a8f0-ab3df124a6e0",
+              "leftValue": "={{ $json.phone }}",
+              "rightValue": "={{ $('leadReply').item.json.body.from_phone }}",
+              "operator": {
+                "type": "array",
+                "operation": "notContains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        576,
+        -32
+      ],
+      "id": "7661dc5b-3574-4e02-af34-b72dffa59eaa",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "phone"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -32
+      ],
+      "id": "831a1e03-634e-45a0-a9bc-1c1de4891de5",
+      "name": "Aggregate3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -16
+      ],
+      "id": "7a73bd48-42fa-409e-96f6-0dPLACEHOLDER_PHONE",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "blacklist_notification",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -32
+      ],
+      "id": "dc6125b8-de8a-459b-b9b8-c8b9e22ac2c4",
+      "name": "getBlacklist",
+      "credentials": {
+        "supabaseApi": {
+          "id": "kVAqtA5p3YJy9nN4",
+          "name": "DemoTest"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo-16k",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo-16k"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        96
+      ],
+      "id": "9f2a8e48-598e-4adf-84b9-b3f77f4a9bba",
+      "name": "gpt-3.5-turbo",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please analyse the sentiment for the following message(s):\n{{ $('Aggregate2').item.json.message }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a sentiment classifier for WhatsApp real estate leads.\n\nYour job is to classify the message below into one of these categories:\n\n- Positive\n- Neutral\n- Negative\n- Reluctant\n- Hard_Stop\n\nRespond with only the category. Use the following definitions:\n\n- Positive: Clearly interested, excited, cooperative\n- Neutral: Ambiguous or indifferent but polite\n- Negative: Dismissive or cold, but not hostile\n- Reluctant: Skeptical, hesitant, unsure, but might engage\n- Hard_Stop: Indicates to stop messaging, unsubscribe, angry, legal threat, etc."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        992,
+        0
+      ],
+      "id": "3808fae9-115e-481a-8819-c35b5fe5fbfe",
+      "name": "sentimentLLM"
+    },
+    {
+      "parameters": {
+        "userKey": "u4tdt5trgijegk3ir3wbt1rmixqmhh",
+        "message": "=Hey {{ $json.agentName }},\nYour lead {{ $('getNumber').item.json.firstName }} {{ $('getNumber').item.json.lastName }} just replied to your message regarding {{ $('getNumber').item.json.campaignName }}🔥\nSentiment: {{ $('sentimentLLM').item.json.text }}\nGood luck!\n",
+        "priority": 0,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.pushover",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        0
+      ],
+      "id": "9b621d8c-c3d9-4f69-bba7-f20e389b1ff4",
+      "name": "Push a message",
+      "credentials": {
+        "pushoverApi": {
+          "id": "EvEW2Amei5VAQy7o",
+          "name": "Pushover WhatsApp"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Agent Information",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "id": "recSxcUstTg7LZPgz",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1296,
+        0
+      ],
+      "id": "7ee43daa-4e66-422c-b107-0fb311983d6b",
+      "name": "getAgentInfo",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "blacklist_notification",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $('leadReply').item.json.body.from_phone }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        0
+      ],
+      "id": "428ef332-17a9-4611-b9a9-a739430cf988",
+      "name": "blackListLead",
+      "credentials": {
+        "supabaseApi": {
+          "id": "kVAqtA5p3YJy9nN4",
+          "name": "DemoTest"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "# Send Message",
+        "height": 80,
+        "width": 1696,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        192
+      ],
+      "typeVersion": 1,
+      "id": "a34f870b-a052-41d7-9302-fa8d852614e6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Lead Reply",
+        "height": 80,
+        "width": 1696,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "7f13a4e2-a9e9-4f29-8bf8-efe51bc768ef",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# Draft Message",
+        "height": 80,
+        "width": 1696,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "57bb0b64-a541-42c4-b4e7-7c24e11ec7c0",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "filterByFormula": "=SUBSTITUTE({phoneNumber}, \"+\", \"\") = \"{{ $('leadReply').item.json.body.from_phone }}\"",
+        "returnAll": false,
+        "limit": 1,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1296,
+        -160
+      ],
+      "id": "668ab626-3645-4663-9eef-76d6535ae059",
+      "name": "getNumber",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "phoneNumber",
+              "displayName": "phoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "campaignName",
+              "displayName": "campaignName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "callAnswered",
+              "displayName": "callAnswered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Concierge Assist",
+                  "value": "Concierge Assist"
+                },
+                {
+                  "name": "Curated Match",
+                  "value": "Curated Match"
+                },
+                {
+                  "name": "Position & Offer",
+                  "value": "Position & Offer"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "createDraft",
+              "displayName": "createDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "messageDraft",
+              "displayName": "messageDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "approveDraft",
+              "displayName": "approveDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateAdded",
+              "displayName": "dateAdded",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateSent",
+              "displayName": "dateSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timeSent",
+              "displayName": "timeSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "replied",
+              "displayName": "replied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1872,
+        0
+      ],
+      "id": "29627e8e-b2c5-4035-b7ce-c9e00cf92611",
+      "name": "updateReplyFields",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items\n  .filter(item => !!item.json.dateSent)\n  .map(item => {\n  const dateRaw = item.json.dateSent;\n  const timeRaw = item.json.timeSent || \"00:00\";\n  const lastFollowUp = item.json.lastFollowUpSent || \"none\";\n\n  if (!dateRaw) {\n    throw new Error(\"Missing dateSent field\");\n  }\n\n  let combinedDateTime;\n\n  if (dateRaw.includes(\"/\")) {\n    const [dayStr, monthStr, yearStr] = dateRaw.toString().split(\"/\");\n    const day = dayStr.padStart(2, '0');\n    const month = monthStr.padStart(2, '0');\n    const year = yearStr;\n    combinedDateTime = `${year}-${month}-${day}T${timeRaw}:00`;\n  } else {\n    combinedDateTime = `${dateRaw}T${timeRaw}:00`;\n  }\n\n  // ⏰ Adjust for +2 timezone offset manually\n  const [hoursStr, minutesStr] = timeRaw.split(\":\");\n  const adjustedDate = new Date(`${combinedDateTime}`);\n  adjustedDate.setUTCHours(parseInt(hoursStr) - 2, parseInt(minutesStr));\n\n  const sentDate = adjustedDate;\n  const now = new Date();\n\n  const diffMs = now - sentDate;\n  const hoursSinceSent = diffMs / (1000 * 60 * 60);\n  const daysSinceSent = diffMs / (1000 * 60 * 60 * 24);\n\n  let stage = null;\n\n  if (lastFollowUp === \"none\" || lastFollowUp === \"\") {\n    if (hoursSinceSent >= 168 && hoursSinceSent <= 240) {\n      stage = \"7d\";\n    } else if (hoursSinceSent >= 72) {\n      stage = \"72h\";\n    } else if (hoursSinceSent >= 24) {\n      stage = \"24h\";\n    }\n  } else if (lastFollowUp === \"24h\") {\n    if (hoursSinceSent >= 72 && hoursSinceSent < 120) {\n      stage = \"72h\";\n    } else if (hoursSinceSent >= 168 && hoursSinceSent <= 240) {\n      stage = \"7d\";\n    }\n  } else if (lastFollowUp === \"72h\") {\n    if (hoursSinceSent >= 168 && hoursSinceSent <= 240) {\n      stage = \"7d\";\n    }\n  }\n\n  return {\n    json: {\n      ...item.json,\n      sentDate: sentDate.toISOString(),\n      hoursSinceSent,\n      daysSinceSent,\n      displayHours: Math.floor(hoursSinceSent),\n      displayDays: Math.round(daysSinceSent * 10) / 10,\n      followUpStage: stage,\n      shouldNotify: !!stage\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        256
+      ],
+      "id": "639a889e-68f5-4b51-be41-29fb3616eec1",
+      "name": "combineTimestamp"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1872,
+        256
+      ],
+      "id": "0f58f223-58ff-444a-94e0-eeb6559a0316",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "filterByFormula": "=AND(\n  {replied} = \"No\",\n  OR(\n    {lastFollowUpSent} = \"none\",\n    {lastFollowUpSent} = \"24h\",\n    {lastFollowUpSent} = \"72h\"\n  ),\n  {dateSent} != BLANK(),\n  {timeSent} != BLANK()\n)\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2064,
+        256
+      ],
+      "id": "736b771c-d782-4b43-8f24-aec00e6867f5",
+      "name": "getLeadsForFollowUp",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "82acf270-0e1e-4907-92d1-6e92e87622fa",
+              "leftValue": "={{ $json.shouldNotify }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "1d72770f-e632-4215-a8c7-e27ab46be693",
+              "leftValue": "={{ $json.replied }}",
+              "rightValue": "No",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "3c66d4fa-e7a6-46a6-a387-37c1991d6093",
+              "leftValue": "={{ $json.followUpStatus }}",
+              "rightValue": "No Draft",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2464,
+        256
+      ],
+      "id": "82e09b83-e546-48aa-a9fe-5c94a479eaf6",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "userKey": "u4tdt5trgijegk3ir3wbt1rmixqmhh",
+        "message": "=Hey <b> {{ $('getAgentInfo1').item.json.agentName }},\n</b><br>{{ $('NotificationLLM').item.json.text }}<br><br>\n<a href=\"YOUR_URL\">Tap here to access the Follow-up interface</a>\n",
+        "priority": 0,
+        "additionalFields": {
+          "html": true,
+          "sound": "echo"
+        }
+      },
+      "type": "n8n-nodes-base.pushover",
+      "typeVersion": 1,
+      "position": [
+        3264,
+        336
+      ],
+      "id": "2add538c-453c-4e65-ab6b-a0b0548b5bc6",
+      "name": "Push a message1",
+      "credentials": {
+        "pushoverApi": {
+          "id": "EvEW2Amei5VAQy7o",
+          "name": "Pushover WhatsApp"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here are the leads needing follow-up:\n\n{{ $json.aggregatedLeadsForFollowUp.map(l => `- ${l.name} (${l.stage}) – ${l.campaign}`).join('\\n') }}\n\nSummarize this into a push message the agent can understand quickly.\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=# Overview\nYou are a notification assistant. Given a list of leads who have not responded, summarize how many are at each follow-up stage, grouped by campaign.\n\nYour job is to generate a clear, professional reminder message when one or more leads have not replied to a previous message.\n\nYou will be given a list of leads, each with their full name and follow-up stage (such as \"24h\", \"72h\", or \"7d\") Finally you will also receive the campaign name that you can reference for each lead in the message.\n\n## Rules:\n- Group the leads by follow-up stage (e.g. 24h, 72h, 7d).\n- Mention which campaign each lead is coming from/belongs to.\n- Mention how many leads are in each group and list their names.\n- Use natural language, short sentences, and make it mobile-friendly.\n- Keep the tone helpful, not urgent or robotic.\n- End with a call to action: remind the agent they can generate follow-ups in the interface.\n\n## Example\n\nyou have 3 leads needing follow-up:\n\nCampaign: *Tomato Hills*\n• *Sarah Malik* has not replied to in *24 hours*.\n• *Omar Badr* has not replied in *24 hours*.\n\nCampaign: *Jumeirah Hills*\n• Tim Tater has not replied in *7 days*.\n\nYou can generate follow-up drafts in the Follow-up interface.\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        3056,
+        176
+      ],
+      "id": "85b941ba-2de3-423a-9ca5-700276ed1706",
+      "name": "NotificationLLM"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Agent Information",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "id": "recSxcUstTg7LZPgz",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3392,
+        176
+      ],
+      "id": "c9cb481e-3fa6-4ab2-b86f-ca399561baba",
+      "name": "getAgentInfo1",
+      "executeOnce": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const aggregatedLeadsForFollowUp = items.map(item => ({\n  name: `${item.json.fields.firstName} ${item.json.fields.lastName}`,\n  stage: $input.first().json.fields.lastFollowUpSent || \"unknown\",\n  campaign: item.json.fields.campaignName || \"N/A\"\n}));\n\nreturn [{ json: { aggregatedLeadsForFollowUp } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        240
+      ],
+      "id": "14e7a9ad-1e20-4d97-bb7a-9642acbc9fc1",
+      "name": "aggregate"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        96
+      ],
+      "id": "0c326f09-ddfd-4ad2-9fe2-623fe0a21a50",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "content": "# Follow-up Notification",
+        "height": 80,
+        "width": 1696,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1872,
+        192
+      ],
+      "typeVersion": 1,
+      "id": "5b6238fc-b305-49ed-a564-bd14763039f5",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('combineTimestamp').item.json.id }}",
+            "lastFollowUpSent": "={{ $json.followUpStage }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "phoneNumber",
+              "displayName": "phoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "campaignName",
+              "displayName": "campaignName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "dateAdded",
+              "displayName": "dateAdded",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "callAnswered",
+              "displayName": "callAnswered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Concierge Assist",
+                  "value": "Concierge Assist"
+                },
+                {
+                  "name": "Curated Match",
+                  "value": "Curated Match"
+                },
+                {
+                  "name": "Position & Offer",
+                  "value": "Position & Offer"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "createDraft",
+              "displayName": "createDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "messageDraft",
+              "displayName": "messageDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "approveDraft",
+              "displayName": "approveDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateSent",
+              "displayName": "dateSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timeSent",
+              "displayName": "timeSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "replied",
+              "displayName": "replied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "dateReplied",
+              "displayName": "dateReplied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timeReplied",
+              "displayName": "timeReplied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "lastFollowUpSent",
+              "displayName": "lastFollowUpSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "none",
+                  "value": "none"
+                },
+                {
+                  "name": "24h",
+                  "value": "24h"
+                },
+                {
+                  "name": "72h",
+                  "value": "72h"
+                },
+                {
+                  "name": "7d",
+                  "value": "7d"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpStatus",
+              "displayName": "followUpStatus",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "createFollowUp",
+              "displayName": "createFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "followUpDraft",
+              "displayName": "followUpDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "approveFollowUp",
+              "displayName": "approveFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendFollowUp",
+              "displayName": "sendFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2688,
+        240
+      ],
+      "id": "8bfa3bd2-985b-4999-9705-dac053b6db93",
+      "name": "updateStage",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "create-follow-up-draft",
+        "options": {
+          "responseData": "=<html>\n  <body style=\"background-color:#000000; color:#ffffff; font-family:sans-serif; font-size:20px;\">\n    <p>\n      Your follow-up draft is being created.<br><br>\n      You may now close this tab.\n    </p>\n  </body>\n</html>\n",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1872,
+        512
+      ],
+      "id": "596be975-d643-4559-a733-10536a9eaf52",
+      "name": "createFollowUpDraft",
+      "webhookId": "b0f2dc0a-e2ab-4f67-a65e-56c95595a7ee"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "id": "={{ $json.query.leadId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2064,
+        512
+      ],
+      "id": "5063e623-1b27-4b0d-ae77-9b9286bcd8f9",
+      "name": "getLeadInfo1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please draft a follow-up message using the following information:\n\n- firstName: {{ $json.firstName }}\n- lastName: {{ $json.lastName }}\n- campaignName: {{ $json.campaignName }}\n- dateSent: {{ $json.dateSent }}\n- messageDraft: {{ $json.messageDraft }}\n- lastFollowUpSent: {{ $json.lastFollowUpSent }}\n- followUpArchiveOne: {{ $json.followUpArchiveOne }}\n- followUpArchiveTwo: {{ $json.followUpArchiveTwo }}\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a follow-up message drafting assistant for a real estate agent managing WhatsApp conversations with leads. Your task is to write professional follow-up messages based on the context of the lead interaction.\n\nYou will be given:\n- firstName: the lead's first name\n- lastName: the lead's last name\n- campaignName: the real estate project the lead inquired about\n- dateSent: the date the initial message was sent\n- messageDraft: the full initial message sent to the lead\n- lastFollowUpSent: the last follow-up stage that was sent (\"none\", \"24h\", \"72h\", \"7d\")\n- followUpArchiveOne: the first follow-up message previously sent (if any)\n- followUpArchiveTwo: the second follow-up message previously sent (if any)\n\nYour goal is to:\n1. Do not make assumptions regarding what the agent might or might no have done (e.g. \"I wanted to ensure you received the info I sent earlier\")\n\n2. Respect the stage the lead is in and vary tone slightly:\n   - **24h**: Friendly reminder, assuming they may have missed it.\n   - **72h**: Slight urgency, emphasize helpfulness.\n   - **7d**: Final polite check-in, reference previous outreach.\n\n3. Avoid repeating phrases or structure from previous messages (`messageDraft`, `followUpArchiveOne`, `followUpArchiveTwo` if present).\n\n4. Keep the message short, ideally between **300–450 characters** max.\n\n5. You may reference the campaignName conversationally if relevant, but keep the tone natural (e.g. \"about Passo by Beyond\").\n\n6. Avoid hard selling. Assume this is a warm lead who once showed interest.\n\n7. Do not include emojis, as most of the leads are high-networth individuals who appreciate professional outreach.\n\nFormat the message as ready-to-send plain text. Do not include any quotes, labels, or instructions in the output.\n\nYour output should be a single follow-up message.\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2272,
+        512
+      ],
+      "id": "04bdc133-c18c-40c1-8061-f8102d28bc39",
+      "name": "followUpLLM"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo-16k",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo-16k"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2272,
+        608
+      ],
+      "id": "930b8f56-93a0-41fd-8eaa-d4025e48d9e9",
+      "name": "gpt-3.5-turbo1",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo-16k",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo-16k"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3056,
+        272
+      ],
+      "id": "4e371660-a1fb-4c8b-92a0-5e06cd158207",
+      "name": "gpt-3.5-turbo2",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Draft Follow-up",
+        "height": 80,
+        "width": 912,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1872,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "70f5c50b-906e-40f1-88c2-a73a9ea61cc7",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('createFollowUpDraft').item.json.query.leadId }}",
+            "followUpDraft": "={{ $json.text }}",
+            "followUpStatus": "Awaiting Approval"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "phoneNumber",
+              "displayName": "phoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "campaignName",
+              "displayName": "campaignName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "dateAdded",
+              "displayName": "dateAdded",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "callAnswered",
+              "displayName": "callAnswered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Concierge Assist",
+                  "value": "Concierge Assist"
+                },
+                {
+                  "name": "Curated Match",
+                  "value": "Curated Match"
+                },
+                {
+                  "name": "Position & Offer",
+                  "value": "Position & Offer"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "createDraft",
+              "displayName": "createDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "messageDraft",
+              "displayName": "messageDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "approveDraft",
+              "displayName": "approveDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateSent",
+              "displayName": "dateSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "timeSent",
+              "displayName": "timeSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "replied",
+              "displayName": "replied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "dateReplied",
+              "displayName": "dateReplied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "timeReplied",
+              "displayName": "timeReplied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastFollowUpSent",
+              "displayName": "lastFollowUpSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "none",
+                  "value": "none"
+                },
+                {
+                  "name": "24h",
+                  "value": "24h"
+                },
+                {
+                  "name": "72h",
+                  "value": "72h"
+                },
+                {
+                  "name": "7d",
+                  "value": "7d"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpStatus",
+              "displayName": "followUpStatus",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "createFollowUp",
+              "displayName": "createFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "followUpDraft",
+              "displayName": "followUpDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "approveFollowUp",
+              "displayName": "approveFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendFollowUp",
+              "displayName": "sendFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "followUpArchiveOne",
+              "displayName": "followUpArchiveOne",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpArchiveTwo",
+              "displayName": "followUpArchiveTwo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpArchiveThree",
+              "displayName": "followUpArchiveThree",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2592,
+        512
+      ],
+      "id": "409e51b5-3c37-4b45-b6fd-302a51ccb9df",
+      "name": "updateFollowUpFields",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Approve Follow-Up Draft",
+        "height": 80,
+        "width": 912,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1872,
+        720
+      ],
+      "typeVersion": 1,
+      "id": "2acb0568-1fc3-4eee-810c-25a7745dc7ca",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "followUpStatus": "Approved",
+            "followUpDraft": "={{ $json.followUpDraft }}",
+            "followUpArchiveOne": "={{ $json.followUpArchiveOne }}",
+            "followUpArchiveThree": "={{ $json.followUpArchiveThree }}",
+            "followUpArchiveTwo": "={{ $json.followUpArchiveTwo }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "phoneNumber",
+              "displayName": "phoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "campaignName",
+              "displayName": "campaignName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "dateAdded",
+              "displayName": "dateAdded",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "callAnswered",
+              "displayName": "callAnswered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Concierge Assist",
+                  "value": "Concierge Assist"
+                },
+                {
+                  "name": "Curated Match",
+                  "value": "Curated Match"
+                },
+                {
+                  "name": "Position & Offer",
+                  "value": "Position & Offer"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "createDraft",
+              "displayName": "createDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "messageDraft",
+              "displayName": "messageDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "approveDraft",
+              "displayName": "approveDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateSent",
+              "displayName": "dateSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "timeSent",
+              "displayName": "timeSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "replied",
+              "displayName": "replied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "dateReplied",
+              "displayName": "dateReplied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "timeReplied",
+              "displayName": "timeReplied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastFollowUpSent",
+              "displayName": "lastFollowUpSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "none",
+                  "value": "none"
+                },
+                {
+                  "name": "24h",
+                  "value": "24h"
+                },
+                {
+                  "name": "72h",
+                  "value": "72h"
+                },
+                {
+                  "name": "7d",
+                  "value": "7d"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "followUpStatus",
+              "displayName": "followUpStatus",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "createFollowUp",
+              "displayName": "createFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "followUpDraft",
+              "displayName": "followUpDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "approveFollowUp",
+              "displayName": "approveFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "sendFollowUp",
+              "displayName": "sendFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "followUpArchiveOne",
+              "displayName": "followUpArchiveOne",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpArchiveTwo",
+              "displayName": "followUpArchiveTwo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpArchiveThree",
+              "displayName": "followUpArchiveThree",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2480,
+        784
+      ],
+      "id": "406f44d3-c75b-4a50-a2dd-1c9e26dbfa2a",
+      "name": "updateFollowUpStatus",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "approve-follow-up-draft",
+        "options": {
+          "responseData": "=<html>\n  <body style=\"background-color:#000000; color:#ffffff; font-family:sans-serif; font-size:20px;\">\n    <p>\n      Follow up draft approved!<br><br>\n      You may now close this tab.\n    </p>\n  </body>\n</html>\n",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1872,
+        784
+      ],
+      "id": "e90f0572-17b3-4459-80b4-254393a97523",
+      "name": "approveFollowUpDraft",
+      "webhookId": "b0f2dc0a-e2ab-4f67-a65e-56c95595a7ee"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "id": "={{ $json.query.recordId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2064,
+        784
+      ],
+      "id": "35e30fc4-86f2-4e1b-9035-PLACEHOLDER_PHONEd2",
+      "name": "getLeadInfo2",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst results = [];\n\nfor (const item of items) {\n  const lead = item.json;\n  const draft = lead.followUpDraft;\n  const id = lead.id;\n\n  const archiveOne = lead.followUpArchiveOne || \"\";\n  const archiveTwo = lead.followUpArchiveTwo || \"\";\n  const archiveThree = lead.followUpArchiveThree || \"\";\n\n  let payload = {\n    id,\n    followUpDraft: \"\",\n    followUpStatus: \"Approved\",\n    createFollowUp: \"\",\n    approveFollowUp: \"\",\n    sendFollowUp: \"\",\n    followUpArchiveOne: archiveOne,\n    followUpArchiveTwo: archiveTwo,\n    followUpArchiveThree: archiveThree\n  };\n\n  // Insert the draft into the first available slot\n  if (!archiveOne) {\n    payload.followUpArchiveOne = draft;\n  } else if (!archiveTwo) {\n    payload.followUpArchiveTwo = draft;\n  } else if (!archiveThree) {\n    payload.followUpArchiveThree = draft;\n  } else {\n    throw new Error(\"All archive slots are full for lead ID: \" + id);\n  }\n\n  results.push({ json: payload });\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        784
+      ],
+      "id": "081513c8-c398-4a7b-b185-534738f54e85",
+      "name": "dynamicArchiving"
+    },
+    {
+      "parameters": {
+        "content": "# Send Follow-Up",
+        "height": 80,
+        "width": 912,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1872,
+        944
+      ],
+      "typeVersion": 1,
+      "id": "7bcf6522-8401-4b51-82ea-9bbb183f4fdb",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "id": "={{ $json.query.recordId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2064,
+        1008
+      ],
+      "id": "1ac56edc-4819-496c-9590-d0176ef9b051",
+      "name": "getLeadInfo3",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "send-follow-up",
+        "options": {
+          "responseData": "=<html>\n  <body style=\"background-color:#000000; color:#ffffff; font-family:sans-serif; font-size:20px;\">\n    <p>\n      Follow-up Sent!<br><br>\n      You may now close this tab.\n    </p>\n  </body>\n</html>\n",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1872,
+        1008
+      ],
+      "id": "85039b3f-6379-42e3-92a7-f4a23874c69c",
+      "name": "sendFollowUp",
+      "webhookId": "b0f2dc0a-e2ab-4f67-a65e-56c95595a7ee"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const data = item.json;\n  const recordId = data.id;\n\n  const archives = [\n    { archive: data.followUpArchiveOne, sent: data.sentOne, field: \"sentOne\", archiveField: \"followUpArchiveOne\" },\n    { archive: data.followUpArchiveTwo, sent: data.sentTwo, field: \"sentTwo\", archiveField: \"followUpArchiveTwo\" },\n    { archive: data.followUpArchiveThree, sent: data.sentThree, field: \"sentThree\", archiveField: \"followUpArchiveThree\" }\n  ];\n\n  const unsent = archives.find(a => a.archive && a.sent !== \"SENT\");\n\n  if (!unsent) {\n    throw new Error(\"No unsent follow-up message found for record \" + recordId);\n  }\n\n  // Mark the selected archive as SENT\n  const sentOne = unsent.field === \"sentOne\" ? \"SENT\" : data.sentOne || \"NOT SENT\";\n  const sentTwo = unsent.field === \"sentTwo\" ? \"SENT\" : data.sentTwo || \"NOT SENT\";\n  const sentThree = unsent.field === \"sentThree\" ? \"SENT\" : data.sentThree || \"NOT SENT\";\n\n  results.push({\n    json: {\n      recordId,\n      messageToSend: unsent.archive,\n      sentFieldToUpdate: unsent.field,\n\n      followUpArchiveOne: data.followUpArchiveOne || \"\",\n      followUpArchiveTwo: data.followUpArchiveTwo || \"\",\n      followUpArchiveThree: data.followUpArchiveThree || \"\",\n\n      sentOne,\n      sentTwo,\n      sentThree\n    }\n  });\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        1008
+      ],
+      "id": "d2d60cac-fdc5-417e-9a06-1777b9fe438d",
+      "name": "dynamicSelection"
+    },
+    {
+      "parameters": {
+        "url": "=YOUR_URL $('getLeadInfo3').item.json.phoneNumber }}&apikey=x6LoHwj2sAhd&text={{ $json.messageToSend }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2672,
+        1008
+      ],
+      "id": "18c78bea-a873-42ee-ab72-90bcf8758b81",
+      "name": "sendFollowUpWA"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_APP_ID",
+          "mode": "list",
+          "cachedResultName": "Real Estate",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "YOUR_AIRTABLE_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "YOUR_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('sendFollowUp').item.json.query.recordId }}",
+            "followUpDraft": "=",
+            "followUpStatus": "No Draft",
+            "followUpArchiveOne": "={{ $json.followUpArchiveOne }}",
+            "followUpArchiveTwo": "={{ $json.followUpArchiveTwo }}",
+            "followUpArchiveThree": "={{ $json.followUpArchiveThree }}",
+            "sentOne": "={{ $json.sentOne }}",
+            "sentTwo": "={{ $json.sentTwo }}",
+            "sentThree": "={{ $json.sentThree }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "phoneNumber",
+              "displayName": "phoneNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "campaignName",
+              "displayName": "campaignName",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "dateAdded",
+              "displayName": "dateAdded",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "callAnswered",
+              "displayName": "callAnswered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "framework",
+              "displayName": "framework",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Concierge Assist",
+                  "value": "Concierge Assist"
+                },
+                {
+                  "name": "Curated Match",
+                  "value": "Curated Match"
+                },
+                {
+                  "name": "Position & Offer",
+                  "value": "Position & Offer"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "createDraft",
+              "displayName": "createDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "messageDraft",
+              "displayName": "messageDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "approveDraft",
+              "displayName": "approveDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendMessage",
+              "displayName": "sendMessage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "dateSent",
+              "displayName": "dateSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "timeSent",
+              "displayName": "timeSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "replied",
+              "displayName": "replied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "dateReplied",
+              "displayName": "dateReplied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "timeReplied",
+              "displayName": "timeReplied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "lastFollowUpSent",
+              "displayName": "lastFollowUpSent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "none",
+                  "value": "none"
+                },
+                {
+                  "name": "24h",
+                  "value": "24h"
+                },
+                {
+                  "name": "72h",
+                  "value": "72h"
+                },
+                {
+                  "name": "7d",
+                  "value": "7d"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpStatus",
+              "displayName": "followUpStatus",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "No Draft",
+                  "value": "No Draft"
+                },
+                {
+                  "name": "Awaiting Approval",
+                  "value": "Awaiting Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "createFollowUp",
+              "displayName": "createFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "followUpDraft",
+              "displayName": "followUpDraft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "approveFollowUp",
+              "displayName": "approveFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sendFollowUp",
+              "displayName": "sendFollowUp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "followUpArchiveOne",
+              "displayName": "followUpArchiveOne",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sentOne",
+              "displayName": "sentOne",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "SENT",
+                  "value": "SENT"
+                },
+                {
+                  "name": "NOT SENT",
+                  "value": "NOT SENT"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpArchiveTwo",
+              "displayName": "followUpArchiveTwo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sentTwo",
+              "displayName": "sentTwo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "SENT",
+                  "value": "SENT"
+                },
+                {
+                  "name": "NOT SENT",
+                  "value": "NOT SENT"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "followUpArchiveThree",
+              "displayName": "followUpArchiveThree",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sentThree",
+              "displayName": "sentThree",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "SENT",
+                  "value": "SENT"
+                },
+                {
+                  "name": "NOT SENT",
+                  "value": "NOT SENT"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2480,
+        1008
+      ],
+      "id": "a26db352-118f-45e8-a05c-a9aa36c31474",
+      "name": "updateFollowUpFields1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Supabase URL\n\nYOUR_URL"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4576,
+        -112
+      ],
+      "id": "5a2c3c5e-8842-44ea-a763-f29ec8739956",
+      "name": "Sticky Note10"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "30": {
+      "main": [
+        [
+          {
+            "node": "getLeadMessages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "createDraft": {
+      "main": [
+        [
+          {
+            "node": "getLeadInfo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "getAgentInformation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "getBrandGuidelines",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "getFramework",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getFramework": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLeadInfo": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getBrandGuidelines": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getAgentInformation": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "messageDrafter LLM",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "messageDrafter LLM": {
+      "main": [
+        [
+          {
+            "node": "messageDraft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "messageDrafter LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "approveDraft1": {
+      "main": [
+        [
+          {
+            "node": "updateStatus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sendMessage": {
+      "main": [
+        [
+          {
+            "node": "getLead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLead": {
+      "main": [
+        [
+          {
+            "node": "sendMessageWA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sendMessageWA": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "6<X<10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "addLeadToDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "addLeadToDB": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sendImage": {
+      "main": [
+        [
+          {
+            "node": "updateAirtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dbCleanUp": {
+      "main": [
+        [
+          {
+            "node": "getContactedLeads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getContactedLeads": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deleteOtherMessages": {
+      "main": [
+        []
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "deleteOtherMessages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "leadReply": {
+      "main": [
+        [
+          {
+            "node": "getBlacklist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLeadMessages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6<X<10": {
+      "main": [
+        [
+          {
+            "node": "sendImage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "30",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "getNumber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getBlacklist": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-3.5-turbo": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "sentimentLLM",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sentimentLLM": {
+      "main": [
+        [
+          {
+            "node": "getAgentInfo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getAgentInfo": {
+      "main": [
+        [
+          {
+            "node": "Push a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push a message": {
+      "main": [
+        [
+          {
+            "node": "blackListLead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getNumber": {
+      "main": [
+        [
+          {
+            "node": "sentimentLLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "blackListLead": {
+      "main": [
+        [
+          {
+            "node": "updateReplyFields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "combineTimestamp": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "getLeadsForFollowUp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLeadsForFollowUp": {
+      "main": [
+        [
+          {
+            "node": "combineTimestamp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "updateStage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NotificationLLM": {
+      "main": [
+        [
+          {
+            "node": "getAgentInfo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getAgentInfo1": {
+      "main": [
+        [
+          {
+            "node": "Push a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "aggregate": {
+      "main": [
+        [
+          {
+            "node": "NotificationLLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push a message1": {
+      "main": [
+        []
+      ]
+    },
+    "updateStage": {
+      "main": [
+        [
+          {
+            "node": "aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "createFollowUpDraft": {
+      "main": [
+        [
+          {
+            "node": "getLeadInfo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLeadInfo1": {
+      "main": [
+        [
+          {
+            "node": "followUpLLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-3.5-turbo1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "followUpLLM",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-3.5-turbo2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "NotificationLLM",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "followUpLLM": {
+      "main": [
+        [
+          {
+            "node": "updateFollowUpFields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "approveFollowUpDraft": {
+      "main": [
+        [
+          {
+            "node": "getLeadInfo2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLeadInfo2": {
+      "main": [
+        [
+          {
+            "node": "dynamicArchiving",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "updateFollowUpStatus": {
+      "main": [
+        []
+      ]
+    },
+    "dynamicArchiving": {
+      "main": [
+        [
+          {
+            "node": "updateFollowUpStatus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getLeadInfo3": {
+      "main": [
+        [
+          {
+            "node": "dynamicSelection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sendFollowUp": {
+      "main": [
+        [
+          {
+            "node": "getLeadInfo3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dynamicSelection": {
+      "main": [
+        [
+          {
+            "node": "updateFollowUpFields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sendFollowUpWA": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "200bba0a-5013-41f5-8466-96f35d5f684c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "REDACTED_ID"
+  },
+  "id": "LO6wgPYjAKHtOqoG",
+  "tags": [
+    {
+      "createdAt": "2025-07-14T16:31:31.327Z",
+      "updatedAt": "2025-07-14T16:31:31.327Z",
+      "id": "CP3aEFNeOuhaag2l",
+      "name": "Demo Test"
+    }
+  ]
+}
