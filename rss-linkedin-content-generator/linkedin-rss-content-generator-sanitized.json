@@ -1,0 +1,1927 @@
+{
+  "name": "LinkedIn RSS Post",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        240
+      ],
+      "id": "2337d8d9-1916-4dce-b17c-e1885cb4c4c3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1872,
+        96
+      ],
+      "id": "e5ce2d0e-75c4-4aaa-8d17-44e221fe00e7",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.rss }}",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        2032,
+        176
+      ],
+      "id": "e938da06-7d31-44f2-9529-04bb70fd7d8a",
+      "name": "RSS Read",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const feeds = [\n  {\n    \"name\": \"MIT Technology Review – AI\",\n    \"rss\": \"YOUR_URL_HERE"\n  },\n  {\n    \"name\": \"Hugging Face Blog\",\n    \"rss\": \"YOUR_URL_HERE"\n  },\n  {\n    \"name\": \"Google AI Blog\",\n    \"rss\": \"YOUR_URL_HERE"\n  },\n  {\n    \"name\": \"Import AI\",\n    \"rss\": \"YOUR_URL_HERE"\n  },\n  {\n    \"name\": \"Latent Space\",\n    \"rss\": \"YOUR_URL_HERE"\n  }\n];\n\nreturn feeds.map(feed => ({ json: feed }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        96
+      ],
+      "id": "bd6cbeee-bc55-406c-8a48-3f92c3622618",
+      "name": "RSS URLs"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8ba5855d-8056-4368-9ae4-8cc9e1f1adb3",
+              "leftValue": "={{ $json.pubDate }}",
+              "rightValue": "={{ DateTime.now().minus({ days:3 }) }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "afterOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2032,
+        16
+      ],
+      "id": "0ba61029-05a2-4fed-ab7d-d99483deb7f6",
+      "name": "< 3 Days"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        176
+      ],
+      "id": "a6b85372-d1f3-477c-a749-91199fa8e064",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2528,
+        -64
+      ],
+      "id": "829abde6-05ac-4e3d-a155-4bfc9da08238",
+      "name": "getContent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "maxItems": 50
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        0
+      ],
+      "id": "c36a1a22-7f58-435d-8e79-ed98f537c982",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2384,
+        272
+      ],
+      "id": "300c8c4c-deeb-435b-bfc1-63f2b95df8d9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"sourceSummary\": {{ JSON.stringify($json.text) }},\n  \"sourceURL\": {{ JSON.stringify($('Limit').item.json.link) }},\n  \"sourceHeadline\": {{ JSON.stringify($('Limit').item.json.title) }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2640,
+        112
+      ],
+      "id": "c3e0d9fe-8f57-4cc4-9a6c-ac2bc6a52741",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a helpful, intelligent summarizer assistant. Your task is to identify the main body text of the article\nand create a detailed summary of its contents. Identify any key subjects or themes and the main topic of the article.\n\nSummaries should be no more than 1000 characters, do not Include any extra words or phrases like \"summary of\narticle\" or \"the article discusses\""
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2384,
+        112
+      ],
+      "id": "4c17abc9-7c1f-4bab-b65d-7b02d9d094bc",
+      "name": "RSS Summary"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appK81GvJ2OE4N8HZ",
+          "mode": "list",
+          "cachedResultName": "Socials",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBhXtVKiZmktaLx",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sourceSummary": "={{ $json.sourceSummary }}",
+            "sourceURL": "={{ $json.sourceURL }}",
+            "sourceHeadline": "={{ $json.sourceHeadline }}",
+            "needsImage?": "No",
+            "Status": "Waiting for Content"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "sourceHeadline",
+              "displayName": "sourceHeadline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sourceSummary",
+              "displayName": "sourceSummary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "goToArticle",
+              "displayName": "goToArticle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "sourceURL",
+              "displayName": "sourceURL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "socialChannel",
+              "displayName": "socialChannel",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Twitter",
+                  "value": "Twitter"
+                },
+                {
+                  "name": "LinkedIn",
+                  "value": "LinkedIn"
+                },
+                {
+                  "name": "Blog",
+                  "value": "Blog"
+                },
+                {
+                  "name": "Instagram",
+                  "value": "Instagram"
+                },
+                {
+                  "name": "Facebook",
+                  "value": "Facebook"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "needsImage?",
+              "displayName": "needsImage?",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "twitterCopy",
+              "displayName": "twitterCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "linkedInCopy",
+              "displayName": "linkedInCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "blogCopy",
+              "displayName": "blogCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "imagePrompt",
+              "displayName": "imagePrompt",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "postImage",
+              "displayName": "postImage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Waiting for Content",
+                  "value": "Waiting for Content"
+                },
+                {
+                  "name": "Needs Approval",
+                  "value": "Needs Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Posted",
+                  "value": "Posted"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "datePosted",
+              "displayName": "datePosted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2784,
+        112
+      ],
+      "id": "05ebb772-617e-4e5f-b5d8-d2f5e340dc0c",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "goToArticle.url",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        240
+      ],
+      "id": "62b4607c-aec3-4705-9df3-1cbd33114e6b",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "goToArticle.url"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        240
+      ],
+      "id": "0292748f-e973-4a0d-b724-dde2b6cf83b0",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "09482e1a-ecc4-4681-906c-7e04b919d549",
+              "leftValue": "={{ $('Aggregate').item.json.url }})",
+              "rightValue": "={{ $('< 3 Days').item.json.link }}",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        2384,
+        -64
+      ],
+      "id": "140f5a22-41b8-4609-a608-5108b1de8784",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appK81GvJ2OE4N8HZ",
+          "mode": "list",
+          "cachedResultName": "Socials",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBhXtVKiZmktaLx",
+          "mode": "list",
+          "cachedResultName": "Social Posts",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1264,
+        240
+      ],
+      "id": "f9aebdea-5e00-407c-bfab-ddd2b23983aa",
+      "name": "getURLs",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        480
+      ],
+      "id": "5f7fcc84-63d1-4b38-8702-1ad11204bc6a",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appK81GvJ2OE4N8HZ",
+          "mode": "list",
+          "cachedResultName": "Socials",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBhXtVKiZmktaLx",
+          "mode": "list",
+          "cachedResultName": "Social Posts",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "filterByFormula": "=AND(\n  {Status} = \"Waiting for Content\",\n  FIND(\"LinkedIn\", {socialChannels}) > 0\n)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        480
+      ],
+      "id": "87a858e1-3ea8-4d7c-a6cd-6f621cc4cfdb",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": "=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1104,
+        480
+      ],
+      "id": "0b34fda8-7b61-41f2-bdc9-fed16fa375c9",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create search queries for this news story:\n\nheadline: {{ $json.sourceSummary }}\nsummary: {{ $json.sourceSummary }}",
+        "options": {
+          "systemMessage": "=You are a search query generator for a LinkedIn research system. Given a source headline and summary, output 4 targeted queries (13 - 15 words each) to gather diverse, high quality data. Include:\n\n1. Recent statistics and data on [keyword] 2025\n  *Finds current numerical insights and datasets.*\n\n2. Case studies real-world examples  [keyword] implementation 2025\n  *Uncovers practical applications and success/failure stories.*\n\n3. Expert opinions quotes [keyword] trends challenges 2025\n  *Captures authoritative perspectives and emerging developments.*\n\n4. Competing content analysis common questions [keyword] 2025\n  *identifies top-ranking articles and audience pain points.*\n\nQueries must be concise, specific, and optimised for authoritative sources.\nNo extra text."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        1312,
+        416
+      ],
+      "id": "6143354f-0103-484f-84e4-e51fb1e7fe47",
+      "name": "Query Generator"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1456,
+        624
+      ],
+      "id": "efc12958-9a01-4dd7-a1c9-e69da56087fc",
+      "name": "gpt-4o-mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=search everything about: {{ $json.output }}",
+        "options": {
+          "systemMessage": "=You are a **research agent** in a **multi-agent blog creation system**. Your task is to **gather concise, high-quality information** for a given **keyword** using the **provided research** and output it in a **condensed, structured format**.\n\n---\n\n### Output Format\n\nUse bullet points. Each bullet must include the following components:\n\n- **Key Insight:** One concise sentence (maximum 20 words).\n- **Implication:** What this insight means or why it matters.\n- **Example:** Real-world application or scenario.\n- **Statistic:** Include one where relevant (e.g., *“Global AI market to reach $47.18B by 2030”*).\n\n---\n\n### Tools\n- Tavily: Call this tool the perform web search related activities.\n\n### Rules\n\n1. **Prioritize**:\n   - Recent data (within the past year {{ $now }})\n   - Authoritative sources\n   - Diverse angles: statistics, trends, pain points, case studies, expert opinions\n\n2. **Extract only core findings** directly supported by the research.\n   - **No explanations, opinions, or irrelevant details.**\n\n3. **Do not** add any extra commentary or filler text.\n\n4. **Limit your output** to a maximum of **8–12 bullet points**.\n   - Be selective. Prioritize only the most **critical and impactful** insights.\n\n5. **Before writing**, internally summarize the main themes and takeaways from the entire research document.\n   - Use this summary to **guide your selection** of bullet points.\n\n6. If multiple sources report similar data:\n   - Choose the **most recent**, **authoritative**, or **statistically significant** version.\n   - **Avoid redundancy.**\n\n7. Your bullet points should collectively address key aspects of the topic, such as:\n   - Market size\n   - Adoption trends\n   - Key applications\n   - Research developments\n   - Implications\n   - Expert insights\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        1584,
+        416
+      ],
+      "id": "cac8b6e4-dadd-4f3b-ae63-b03102de22b7",
+      "name": "Researcher"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Call this tool to perform web search related actions.",
+        "method": "POST",
+        "url": "YOUR_URL_HERE",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_TOKEN_HERE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('JSON', ``, 'json') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1728,
+        624
+      ],
+      "id": "c92fa60a-0f06-40f6-bafe-27fcdbb20758",
+      "name": "Tavily"
+    },
+    {
+      "parameters": {
+        "jsCode": "function getRandomInt1To4() {\n    return Math.floor(Math.random() * 4) + 1;\n}\n\n  // Generate Random Number\n  const randomNumber = getRandomInt1To4();\n\n  // Define the four writing frameworkds\n  const frameworks = {\n    1: `You are an expert at LinkedIn and skilled in crafting impactful copy using the Problem-Agitate-Solve (PAS) framework.\n  \n  Purpose: Create a compelling LinkedIn post on a given topic that generates high engagement-likes, comments, and shares-by adhering to the PAS formula and the guidelines below.\n\n  Task: Write a publish-ready social media post that is engaging, informative, and encourages interaction. \n\n  Content Structure (PAS Framework):\n\n  Problem:\n  - Start with a strong, attention-grabbing conviction statement that identifies a relevant issue or lesson.\n  - Use short sentences to express personal realizations or challenges.\n\n  Agitate:\n  - Elaborate on the consequences or negative outcomes associated with the problem.\n  - Incorporate a dash list to highlight specific experiences, challenges, or mistakes.\n  - Keep points concise, starting with impactful words or phrases.\n\n  Solve:\n  - Share the realization or solution you discovered.\n  - Use another dash list if appropriate to highlight positive changes or benefits.\n  - Include short, motivational sentences to inspire the reader.\n\n  Formatting:\n  - Length: Limit the post to a maximum of 150 words.\n  - Paragraphs: Use short paragraphs and single sentences to create a rhythmic flow.\n  - Lists: Incorporate dash lists to emphasize key points.\n  - Opening: Begin with a strong, impactful statement to engage readers immediately.\n  - Closing: End with a brief, insightful conclusion or reflective statement. Do not ask questions or tell readers what to do.\n\n  Do Not Include:\n  - Emojis, hashtags, or labels.\n  - Cheesy phrases or cliches.\n  - Overused idioms or slang.\n  - Numbered lists (use dash instead).\n  - Semicolons.\n  - Markdown formatting (no asteriks for bold/italic, no backticks for code).\n  - Questions directed at the reader.\n  - Calls-to-action or instructions telling reader what to do.\n  - Phrases like \"Let's explore\", \"What do you think?\", or \"Let me know in the comments\".\n  - Em dashes.`,\n\n    2: `You are an expert at LinkedIn and skilled in crafting impactful copy using the Insight-Impact-Recommendation framework.\n    \n  Purpose: Create a compelling LinkedIn post on a given topic that generates high engagement-likes, comments, and shares-by adhering to the IIR formula and the guidelines below. \n\n  Task: Write a publish-ready social media post that is engaging, informative, and encourages interaction.\n\n  Content Structure (IIR Framework):\n\n  Insight:\n  - Start with a strong, attention-grabbing statement that shares a key insight or observation relevant to your industry.\n  - Use short sentences to introduce the insight.\n  \n  Impact:\n  - Elaborate on the implications or effects of this insight on the industry or professionals.\n  - Incorporate a dash list to highlight specific impacts or consequences.\n  - Keep points concise, starting with impactful words or phrases.\n\n  Recommendation:\n  - Offer actionable advice of steps that the reader can take based on the insight.\n  - Use another dash list if appropriate to outline recommendations.\n  - Include short, motivational sentences to inspire the reader.\n\n  Formatting:\n  - Length: Limit the post to a maximum of 150 words.\n  - Paragraphs: Use short paragraphs and single sentences to create a rhythmic flow.\n  - Bullet Points: Incorporate bullet-point lists to emphasize key points.\n  - Opening: Begin with a strong, impactful statement to engage readers immediately.\n  - Closing: End with an encouraging thought.\n\n  Do Not Include:\n  - Emojis, hashtags, or labels.\n  - Cheesy phrases or cliches.\n  - Overused idioms or slang.\n  - Numbered lists (use bullet points instead)\n  - Semicolons.\n  - Em dashes.`,\n\n    3: `You are an expert at LinkedIn and skilled in crafting impactful copy using the Story-Insight-Action framework.\n  \n  Purpose: Create a compelling LinkedIn post on a given topic that generates high engagement-likes, comments, and shares-by adhering to the SIA formula and the guidelines below. \n  \n  Task: Write a publish-ready social media post that is engaging, informative, and encourages interaction.\n\n  Content Structure (SIA Framework):\n  \n  Story:\n  - Start with a compelling personal story or anecdote that is relevant to your industry or professional journey.\n  - Use vivid language to draw reader in.\n\n  Insight:\n  - Share the key lesson or insight gained from the experience.\n  - Use short sentences to highlight significance.\n\n  Action:\n  - Provide actionable advice or steps relevant to the insight.\n  - Incorporate a dash list to outline specific actions.\n  - Include brief, motivational statements to conclude.\n\n  Formatting:\n  - Length: Limit the post to a maximum of 150 words.\n  - Paragraphs: Use short paragraphs and single sentences to create a rhythmic flow.\n  - Bullet Points: Incorporate bullet-point lists to emphasize key points.\n  - Opening: Begin with an engaging narrative to capture the reader's attention.\n  - Closing: End with an encouraging thought.\n\n  Do Not Include:\n  - Emojis, hashtags, or labels.\n  - Cheesy phrases or cliches.\n  - Overused idioms or slang.\n  - Numbered lists (use bullet points instead)\n  - Semicolons.\n  - Em dashes.`,\n\n    4: `You are an expert at LinkedIn and skilled at crafting impactful copy using the What? So What? Now What? framework.\n\n  Purpose: Create a compelling LinkedIn post on a given topic that generates high engagement-likes, comments, and shares-by adhering to the WSWNW framework.\n\n  Task: Write a publish-ready social media post that is engaging, informative and encourages interactions.\n\n  Content Structure (WSWNW Framework):\n\n  What?:\n  - Present a fact, event, or observation relevant to your industry.\n  - Using a strong opening sentence to grab attention.\n\n  So What?:\n  - Explain the significance or implication of this information.\n  - Incorporate a dash list to highlight specific impacts or consequences.\n  - Keep points concise and impactful.\n\n  Now What?:\n  - Offer actionable advice or a forward-looking perspective.\n  - Use short sentences to motivate the reader to consider next steps.\n\n  Formatting: \n  - Length: Limit the post to a maximum of 150 words.\n  - Paragraphs: Use short paragraphs and single sentences to create a rhythmic flow.\n  - Bullet Points: Incorporate bullet-point lists to emphasize key points.\n  - Opening: Begin with a strong attention grabbing statement.\n  - Closing: End with an encouraging thought.\n\n  Do Not Include:\n  - Emojis, hashtags, or labels.\n  - Cheesy phrases or cliches.\n  - Overused idioms or slang.\n  - Numbered lists (use bullet points instead)\n  - Semicolons.\n  - Em dashes.`\n  };\n\n// Select the framework based on random number\nconst selectedFramework = frameworks[randomNumber];\n\n// Define frameworks names\nconst frameworksName = {\n  1: \"Problem-Agitate-Solve\",\n  2: \"Insight-Impact-Recommendation\",\n  3: \"Story-Insight-Action\",\n  4: \"What?-So What?-Now What?\"\n};\n\n// Return the random number and the corresponding framework\nreturn [\n  {\n    randomNumber: randomNumber,\n    frameworksName: frameworksName[randomNumber],\n    frameworks: selectedFramework\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        416
+      ],
+      "id": "50318b44-5b86-4cdf-adce-514f0114c260",
+      "name": "Get Framework"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appK81GvJ2OE4N8HZ",
+          "mode": "list",
+          "cachedResultName": "Socials",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblXAfbD7jJhS5bmX",
+          "mode": "list",
+          "cachedResultName": "Brand Guidlines",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "id": "recb0qVVJvuy9Fvd4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2000,
+        416
+      ],
+      "id": "32ca0e7e-6e65-4d8c-81d4-f535f7710c6f",
+      "name": "Get a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "chatgpt-4o-latest"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2144,
+        624
+      ],
+      "id": "a330e246-ad37-454e-9e9c-ceb008ab1277",
+      "name": "gpt-4o-latest",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please craft a LinkedIn post based on the following news article and additional research:\n\nFocus on the Article Headline and Summary:\nArticle Headline: {{ $('Search records').item.json.sourceHeadline }}\nArticle Summary: {{ $('Search records').item.json.sourceSummary }}\n\nAdditional Research (use if compelling):\n{{ $('Researcher').item.json.output }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "={{ $('Get Framework').item.json.frameworks }}\n- Never include asteriks or markdown formatting.\n- DO NOT use em dashes for breaks in thought or parenthetical statements."
+            },
+            {
+              "type": "REDACTED_ID",
+              "message": "=Be casual, spartan and use normal language.\n\nPlease follow these tone of voice guidlines:\n{{ $json.Guidelines }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2144,
+        416
+      ],
+      "id": "9b33c75b-21e8-45ca-9b60-144787648263",
+      "name": "LinkedIn Writer"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appK81GvJ2OE4N8HZ",
+          "mode": "list",
+          "cachedResultName": "Socials",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBhXtVKiZmktaLx",
+          "mode": "list",
+          "cachedResultName": "Social Posts",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "linkedInCopy": "={{ $json.text }}",
+            "Status": "Needs Approval",
+            "id": "={{ $('Loop Over Items1').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "sourceHeadline",
+              "displayName": "sourceHeadline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "sourceSummary",
+              "displayName": "sourceSummary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "goToArticle",
+              "displayName": "goToArticle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sourceURL",
+              "displayName": "sourceURL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "socialChannels",
+              "displayName": "socialChannels",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Twitter",
+                  "value": "Twitter"
+                },
+                {
+                  "name": "LinkedIn",
+                  "value": "LinkedIn"
+                },
+                {
+                  "name": "Blog",
+                  "value": "Blog"
+                },
+                {
+                  "name": "Instagram",
+                  "value": "Instagram"
+                },
+                {
+                  "name": "Facebook",
+                  "value": "Facebook"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Waiting for Content",
+                  "value": "Waiting for Content"
+                },
+                {
+                  "name": "Needs Approval",
+                  "value": "Needs Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Posted",
+                  "value": "Posted"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "needsImage?",
+              "displayName": "needsImage?",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "twitterCopy",
+              "displayName": "twitterCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "linkedInCopy",
+              "displayName": "linkedInCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "blogCopy",
+              "displayName": "blogCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "imagePrompt",
+              "displayName": "imagePrompt",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "postImage",
+              "displayName": "postImage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "datePosted",
+              "displayName": "datePosted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2608,
+        480
+      ],
+      "id": "1b35935f-9195-429e-ad29-c51f7de7bfc4",
+      "name": "Update Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "616d81be-6081-4b41-944e-cfe919436511",
+              "leftValue": "={{ $('Search records').item.json['needsImage?'] }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2416,
+        416
+      ],
+      "id": "ac09351c-c347-4f3f-9612-cbe4f1c5dae4",
+      "name": "needsImage?"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-4-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2816,
+        496
+      ],
+      "id": "0fff489e-cdcb-43c4-9f75-8b3175468bdf",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here's the article summary for reference:\n\n{{ $('Search records').item.json.sourceSummary }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a helpful and intelligent content analyser. Your task is to identify the main theme of a given article. \n\nYour choices are:\n1) Conceptual / Educational\n   - Purpose: explain AI/automation concepts, models, frameworks, principles.\n   - Signals: definitions, “how it works,” fundamentals, diagrams-in-words.\n   - Not this if: it’s a step-by-step tutorial (see Practical).\n\n2) Strategic / Industry Trends\n   - Purpose: analyze market shifts, adoption patterns, org strategy, competitive impact.\n   - Signals: forecasts, benchmarks, “what this means for leaders/teams/markets.”\n   - Not this if: it’s primarily an opinion rant (see Opinion).\n\n3) Practical / Applied\n   - Purpose: teach implementation or demonstrate a workflow/tool in action.\n   - Signals: steps, checklists, code/snippets, tool stacks, “how I built X.”\n   - Not this if: no concrete steps or reproducible detail (see Conceptual or Visionary).\n\n4) Innovative / Experimental\n   - Purpose: share novel prototypes, experiments, research-y tinkering.\n   - Signals: “I tested a new approach…”, unconventional use-cases, early results.\n   - Not this if: it’s polished guidance for others to follow (see Practical).\n\n5) Opinion / Policy / Ethics (Thought Leadership)\n   - Purpose: assert a viewpoint or argue for change (governance, safety, societal impact).\n   - Signals: stances, critiques, value judgments, recommendations to regulators/leaders.\n   - Not this if: the focus is market implications with data (see Strategic).\n\n6) Visionary / Futurecasting (Ambitious)\n   - Purpose: bold predictions and big-picture narratives about the future of AI/automation.\n   - Signals: “In 3–5 years…”, transformative claims, aspirational scenarios.\n   - Not this if: there’s a concrete tutorial or current-state analysis (see Practical/Strategic).\n\nTie-break rules (apply in order):\n- If a post mixes tutorial steps with opinion, classify as Practical / Applied.\n- If it summarizes news and adds business implications, classify as Strategic / Industry Trends.\n- If it explains inner workings without steps, classify as Conceptual / Educational.\n- If it shows a new prototype or experiment, classify as Innovative / Experimental.\n- If it’s mostly future speculation without actionable detail, classify as Visionary / Futurecasting.\n- If it’s primarily a stance on policy/ethics, classify as Opinion / Policy / Ethics.\n\nOutput exactly one label from: [\"Conceptual / Educational\",\"Strategic / Industry Trends\",\"Practical / Applied\",\"Innovative / Experimental\",\"Opinion / Policy / Ethics (Thought Leadership)\",\"Visionary / Futurecasting (Ambitious)\"] as 'contentType'.\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2608,
+        272
+      ],
+      "id": "e4d481c3-712e-45a6-a818-0f02158ed6dd",
+      "name": "Content Analyser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=article summary: {{ $('Search records').item.json.sourceSummary }}\n\nDo not output any double or single quotes or special characters.",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an AI generating vivid image prompts for a specific article based on its summary. Do not output any special characters (quotes, dashes, em dashes colons etc.) Your task is to create a short, vivid, model-ready image prompt based on one of six predefined style guides. Each style guide describes the subject, composition, palette, lighting & mood, style, detail cues, and negative cues.  \n\nInstructions:  \n1. Read the provided style guide carefully.  \n2. Distill it into a single prompt that is:\n   - Concise (max ~60 words)\n   - Descriptive of key visual elements\n   - Uses the exact color codes and stylistic cues from the style guide\n   - Free from extra commentary or explanation\n3. Include subject, composition, palette, lighting/mood, style, and detail cues.\n4. Do not include \"Negative Cues\" explicitly, but implicitly avoid them.\n\nOutput format:  \n<your generated prompt>\n\nExample mappings:\n\n**Conceptual / Educational →**  \n{\"prompt\":\"flat vector infographic explaining an AI concept with up to three simple icons, 2-column grid with central heading space, off-white background #F6F7F9, primary #fc9506, accent #c571ef, minimalist vector style, thin outlines, subtle isometric hints, dotted connectors, high negative space, no text\"}\n\n**Strategic / Industry Trends →**  \n{\"prompt\":\"elegant abstract 3D chart forms implying AI market movement, diagonal flow from lower-left to upper-right, central negative space, charcoal #0d0d0d, steel #451861, accent #fc9506, soft rim light, premium corporate style, smooth materials, one accent trajectory line, subtle depth of field, no text\"}\n\n**Practical / Applied →**  \n{\"prompt\":\"photoreal close-up of hands using a laptop running AI tools, faint HUD overlay on screen edges, chest-level angle, shallow depth of field, warm neutrals #0d0d0d and #451861, accent #fc9506 in HUD, soft window light, professional yet approachable, clean workspace, no extra fingers, no text\"}\n\n**Innovative / Experimental →**  \n{\"prompt\":\"futuristic lab workstation with three floating holographic AI widgets, angled perspective, motion streaks toward central holograms, deep midnight #0d0d0d, violet #c571ef, electric gold #fc9506, high-contrast neon lighting, subtle fog, cinematic 3D style, crisp glows, thin bezier links, light particles, no text\"}\n\n**Opinion / Policy / Ethics (Thought Leadership) →**  \n{\"prompt\":\"minimalist symbolic illustration of AI ethics, scales of justice merged with circuit traces, strong central emblem, large negative space, monochrome #0d0d0d and #ffffff, single accent #fc9506, calm authoritative tone, vector/monoline style, precise geometry, thin stroke weights, no text\"}\n\n**Visionary / Futurecasting (Ambitious) →**  \n{\"prompt\":\"cinematic optimistic AI-powered city at blue hour, aerial 3/4 view, sun flare near horizon, deep blue #451861, twilight indigo #c571ef, accent gold #fc9506, high dynamic range, soft light trails, discreet drones, illuminated pathways, detailed but uncluttered, no dystopian elements\"}\n\nConstraints:\n- Make sure to include the specific image style at the start of the prompt (i.e. Conceptual / Educational, Strategic / Industry, etc.)\n- Avoid anything that would invlove text, signs or written elements.\n- Include lighting, mood or atmosphere elements.\n- Here is the style guide: {{ $json.styleGuide }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        3024,
+        272
+      ],
+      "id": "9350ddb2-1574-4b7e-80fc-7be79abcf6a1",
+      "name": "Image Prompt"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "={{ $json.text }}",
+        "options": {
+          "returnImageUrls": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        3280,
+        272
+      ],
+      "id": "2ecf958c-d1b9-4a9e-9d1f-05b15ebf289d",
+      "name": "Generate an image",
+      "credentials": {
+        "openAiApi": {
+          "id": "2JIrEtpMbU5teEL1",
+          "name": "OpenAi Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 7
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3408,
+        272
+      ],
+      "id": "7db446b1-2f0d-410f-8b14-f9d9c9ec989a",
+      "name": "Wait",
+      "webhookId": "1bfb9a5c-8618-47f4-a8ed-80ecd209b145"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3024,
+        496
+      ],
+      "id": "4689fd40-8c1d-47d1-92a7-ef08928c5640",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appK81GvJ2OE4N8HZ",
+          "mode": "list",
+          "cachedResultName": "Socials",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBhXtVKiZmktaLx",
+          "mode": "list",
+          "cachedResultName": "Social Posts",
+          "cachedResultUrl": "YOUR_URL_HERE"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "Needs Approval",
+            "imagePrompt": "={{ $('Image Prompt').item.json.text }}",
+            "linkedInCopy": "={{ $('LinkedIn Writer').item.json.text }}",
+            "postImage": "={{ [ { \"url\": $('HTTP Request').item.json.url } ] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "sourceHeadline",
+              "displayName": "sourceHeadline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "sourceSummary",
+              "displayName": "sourceSummary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "goToArticle",
+              "displayName": "goToArticle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sourceURL",
+              "displayName": "sourceURL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "socialChannels",
+              "displayName": "socialChannels",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Twitter",
+                  "value": "Twitter"
+                },
+                {
+                  "name": "LinkedIn",
+                  "value": "LinkedIn"
+                },
+                {
+                  "name": "Blog",
+                  "value": "Blog"
+                },
+                {
+                  "name": "Instagram",
+                  "value": "Instagram"
+                },
+                {
+                  "name": "Facebook",
+                  "value": "Facebook"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Waiting for Content",
+                  "value": "Waiting for Content"
+                },
+                {
+                  "name": "Needs Approval",
+                  "value": "Needs Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Posted",
+                  "value": "Posted"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "needsImage?",
+              "displayName": "needsImage?",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "twitterCopy",
+              "displayName": "twitterCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "linkedInCopy",
+              "displayName": "linkedInCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "blogCopy",
+              "displayName": "blogCopy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "imagePrompt",
+              "displayName": "imagePrompt",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "postImage",
+              "displayName": "postImage",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "datePosted",
+              "displayName": "datePosted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recordID",
+              "displayName": "recordID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3184,
+        576
+      ],
+      "id": "9949dc31-1346-407b-99d2-6bd2ee27dde7",
+      "name": "Update record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fuPRDSREXCzWyRbI",
+          "name": "Demo Test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node: getStyle (outputs only styleGuide with brand colors)\n\n// Canonical labels\nconst LABELS = [\n  \"Conceptual / Educational\",\n  \"Strategic / Industry Trends\",\n  \"Practical / Applied\",\n  \"Innovative / Experimental\",\n  \"Opinion / Policy / Ethics (Thought Leadership)\",\n  \"Visionary / Futurecasting (Ambitious)\"\n];\n\n// Your style map (mini-specs with placeholders for brand colors)\nconst STYLE_MAP = {\n  \"Conceptual / Educational\":\n    \"Subject: flat vector infographic explaining an AI concept with up to three simple icons. Composition: 2-column grid with generous central heading space; balanced margins; square 1200×1200. Palette: off-white #F6F7F9 background, primary #fc9506, accent #c571ef. Lighting & Mood: clean, bright, academic; no shadows. Style: minimalist vector with thin outlines and restrained labels (no readable text blocks). Detail Cues: subtle isometric hints, dotted connectors, small callout bubbles without text. Negative Cues: avoid busy typography, code screenshots, neon glows, photoreal elements.\",\n  \"Strategic / Industry Trends\":\n    \"Subject: elegant abstract 3D chart forms (bars/ribbons/surfaces) implying market movement. Composition: diagonal flow from lower-left to upper-right; central negative space for overlay; square 1200×1200. Palette: charcoal #0d0d0d, steel #451861, accent #fc9506. Lighting & Mood: soft rim light with subtle volumetric haze; premium corporate feel. Style: refined 3D with smooth materials and micro-texture; no literal axes or numbers. Detail Cues: one accent trajectory line, gentle depth of field, thin grid hints. Negative Cues: avoid literal dashboards, cluttered data labels, stock arrows.\",\n  \"Practical / Applied\":\n    \"Subject: close-up photoreal hands using a laptop running AI tools; faint HUD overlay anchored to screen edges. Composition: chest-level angle, shallow depth of field, clear focal point on device; square 1200×1200. Palette: warm neutrals #0d0d0d and #451861 with accent #fc9506 in HUD. Lighting & Mood: soft window light; professional yet approachable. Style: clean photorealism with minimal grain; HUD lines subtle at 20–30% opacity. Detail Cues: trackpad gesture, tidy desk, cable management, soft bokeh. Negative Cues: avoid extra fingers/hands, visible text, terminal code walls, heavy neon.\",\n  \"Innovative / Experimental\":\n    \"Subject: futuristic lab workstation with three floating holographic AI widgets/prototypes. Composition: angled perspective with motion streaks toward a central focal cluster; square 1200×1200. Palette: deep midnight #0d0d0d, violet #c571ef, electric gold #fc9506. Lighting & Mood: high-contrast neon with subtle fog; exploratory and dynamic. Style: cinematic 3D/holographic UI; crisp glows with controlled bloom. Detail Cues: thin bezier links, rotating wireframes, light particle dust. Negative Cues: avoid crowded dashboards, illegible microtext, retro grid floors.\",\n  \"Opinion / Policy / Ethics (Thought Leadership)\":\n    \"Subject: symbolic balance of AI and ethics—scales or laurel motif merged with circuit traces. Composition: strong central emblem with large negative space; square 1200×1200. Palette: monochrome #0d0d0d and #ffffff with a single accent #fc9506. Lighting & Mood: calm, authoritative, minimal shadows. Style: minimalist vector/monoline iconography; no photoreal textures. Detail Cues: precise geometry, thin stroke weights, subtle concentric rings. Negative Cues: avoid faces, gavel clichés, busy text, political imagery.\",\n  \"Visionary / Futurecasting (Ambitious)\":\n    \"Subject: optimistic AI-enabled city at blue hour with autonomous systems and aerial transit. Composition: aerial 3/4 view; sun flare near horizon; layered depth; square 1200×1200. Palette: deep blue #451861, twilight indigo #c571ef, accent gold #fc9506. Lighting & Mood: cinematic, hopeful, high dynamic range. Style: polished 3D/paintover; detailed but uncluttered. Detail Cues: soft light trails, discreet drones, illuminated pathways. Negative Cues: avoid dystopian smoke, overcrowded skyscrapers, excessive neon.\"\n};\n\n// Fallback if label is missing/unmatched\nconst FALLBACK =\n  \"Subject: abstract tech background with diagonal circuitry arcs framing corners. Composition: central negative space; square 1200×1200. Palette: dark navy #0d0d0d, slate #451861, accent #fc9506. Lighting & Mood: soft bloom highlights, subtle depth. Style: clean vector with fine grain lines at low opacity. Detail Cues: gentle gradients, small glowing nodes. Negative Cues: avoid text, charts, binary rain, globes.\";\n\n// Map over incoming items\nreturn items.map(item => {\n  const j = item.json || {};\n  const label = j.theme || j.label || j.category || \"\";\n\n  const styleGuide = STYLE_MAP[label] || FALLBACK;\n\n  return { json: { styleGuide } };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        272
+      ],
+      "id": "16d8a60d-ced7-4ea6-8c55-52f8a2311ae7",
+      "name": "styleMap"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "getURLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "< 3 Days",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS URLs": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "< 3 Days": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getContent": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "RSS Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RSS Summary",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Summary": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "RSS URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "getContent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getURLs": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Query Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Query Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Researcher",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Generator": {
+      "main": [
+        [
+          {
+            "node": "Researcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "Researcher",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Researcher": {
+      "main": [
+        [
+          {
+            "node": "Get Framework",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Framework": {
+      "main": [
+        [
+          {
+            "node": "Get a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a record": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-latest": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LinkedIn Writer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Writer": {
+      "main": [
+        [
+          {
+            "node": "needsImage?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Airtable": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "needsImage?": {
+      "main": [
+        [
+          {
+            "node": "Content Analyser",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Analyser",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Image Prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Analyser": {
+      "main": [
+        [
+          {
+            "node": "styleMap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update record": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "styleMap": {
+      "main": [
+        [
+          {
+            "node": "Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9a174e48-4b88-4ff2-9bab-0869f6bd4318",
+  "meta": {
+    "REDACTED_ID": true,
+    "instanceId": "REDACTED_ID"
+  },
+  "id": "vDAYmwbd1ZndKunJ",
+  "tags": [
+    {
+      "createdAt": "2025-07-14T16:31:31.327Z",
+      "updatedAt": "2025-07-14T16:31:31.327Z",
+      "id": "CP3aEFNeOuhaag2l",
+      "name": "Demo Test"
+    }
+  ]
+}
