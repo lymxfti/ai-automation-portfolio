@@ -8,8 +8,12 @@ This project is an end-to-end WhatsApp automation system built for a real estate
 
 - **Automated lead intake and storage** (Airtable integration)
 - **Personalized WhatsApp messaging** (using AI-generated drafts for first contact and follow-ups)
+     - The AI generates the messages based on
+          - The lead information: firstName, lastName, emailAddress, phoneNumber, campaignName
+          - three main frameworks: Concierge Assist, Curated Match, Position & Offer
+          - additionally the brand guidelines for the real estate agents are considered
 - **Human-in-the-loop approvals** (agent can review and approve message drafts before sending)
-- **Automated follow-up logic** (reminders at 24h/72h/7d intervals if no reply)
+- **Automated follow-up logic** (context aware reminders at 24h/72h/7d intervals if no reply)
 - **Reply detection and push notification** (see below for details)
 - **Scheduled data cleanup** (Supabase runs a scheduled job every 30 minutes to clear out messages not from leads)
 - **Full auditability and data tracking** (all inbound and outbound WhatsApp messages stored in Supabase/Postgres backend)
@@ -38,7 +42,7 @@ This project is an end-to-end WhatsApp automation system built for a real estate
 
 ## Demo / How it Works
 
-For a sanitized demo, see the included `workflow.json` and sample screenshots/diagrams. All API keys, prompt logic, and client data have been redacted as the system is currently in PROD.
+For a sanitized demo, see the included `whatsapp-lead-automation-sanitized.json` and sample screenshots/diagrams. API keys, prompt logic, and personalized data has been redacted as the system is currently in PROD.
 
 If you’d like a technical walkthrough feel free to reach out.
 
