@@ -1,6 +1,6 @@
 # Laith Y. Mufti | Automation & AI Portfolio
 
-Welcome! I’m Laith Mufti—a business automation enthusiast and solutions builder with a passion for making work more efficient.
+Welcome! I’m Laith Mufti—a business automation enthusiast and AI solutions builder with a passion for making work more efficient.
 
 My interest in automation started early, when I realized how Excel macros could turn hours of repetitive work into a single button click during my internship days. As technology progressed, so did my curiosity. I began automating daily tasks for fun, looking for new ways to make life and work simpler.
 
