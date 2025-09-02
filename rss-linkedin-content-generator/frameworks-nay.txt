@@ -177,6 +177,6 @@ Do Not Include:
 - Overused idioms or slang.
 - Numbered lists (use dash instead).
 - Semicolons.`
-};
+
 
 
