@@ -32,6 +32,7 @@ This repo contains a selection of sanitized workflow demos and projects I’ve b
 - `whatsapp-lead-automation`  
 - `linkedin-rss-content-generator`
 - `ai-proposal-generator`
+- `rag-chatbot-pinecone`
 - *(More coming soon as I upload)*
 
 ---
