@@ -1,5 +1,7 @@
 # LinkedIn RSS Content Generator
 
+![Alt text](https://github.com/lymxfti/ai-automation-portfolio/blob/main/rss-linkedin-content-generator/n8n-workflow-screenshot.png)
+
 ## Overview
 
 This project automates LinkedIn content creation by sourcing posts from curated RSS feeds, processing them with AI, and generating polished drafts ready for publishing. It was designed to help busy professionals maintain a consistent LinkedIn presence while saving time on manual research and drafting.
