@@ -1,5 +1,7 @@
 # WhatsApp Lead Outreach and Reminder Automation
 
+![Alt text](https://github.com/lymxfti/ai-automation-portfolio/blob/main/whatsapp-lead-automation/n8n-workflow-screenshot.png)
+
 ## Overview
 
 This project is an end-to-end WhatsApp automation system built for a real estate agent in my professional circle. The goal was to streamline lead management, follow-up, and communication using automation and AI—helping the agent focus on closing deals, not chasing messages. The system uses headless browser automation to interact directly with the WhatsApp Web UI, enabling reliable message delivery and workflow control without having to rely on the WhatsApp Business API.
