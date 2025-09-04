@@ -1,5 +1,7 @@
 # AI Proposal Generator
 
+![Alt text](https://github.com/lymxfti/ai-automation-portfolio/blob/main/ai-proposal-generator/n8n-workflow-screenshot.png)
+
 ## Overview
 
 This project automates end-to-end proposal generation based on structured inputs captured during a discovery or sales call. It was implemented for a friend running an AI automation agency to speed up turnaround from conversation to client-facing proposal. By the end of the call, a proposal with tailored problem framing, solution design, timeline, and pricing is ready to send to the prospect.
