@@ -1,5 +1,7 @@
 # RAG AI Chatbot Pincone
 
+![Alt text](https://github.com/lymxfti/ai-automation-portfolio/blob/main/rag-chatbot-pinecone/n8n-workflow-screenshot.png)
+
 ## Overview
 
 This project is a Retrieval-Augmented Generation (RAG) chatbot designed to answer user questions based on a curated set of internal documents. It uses Pinecone as a vector store, OpenAI embeddings for semantic search, and n8n for orchestration. The chatbot was built to serve as an intelligent, document-grounded assistant that can be queried via webhook and respond with contextually accurate, non-hallucinated answers.
